@@ -567,109 +567,6 @@ a {
   color: #ddd6fe;
 }
 
-.game-toolbar {
-  position: fixed;
-  top: 18px;
-  right: 18px;
-  z-index: 30;
-  width: 320px;
-  padding: 14px 14px 12px;
-  border-radius: 24px;
-}
-
-.game-toggle {
-  width: 100%;
-  min-height: 46px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 999px;
-  background: rgba(255,255,255,0.05);
-  color: white;
-  cursor: pointer;
-  transition: transform .2s ease, background .2s ease, border-color .2s ease;
-}
-
-.game-toggle:hover {
-  transform: translateY(-1px);
-}
-
-.game-toggle.active {
-  background: linear-gradient(90deg, rgba(239,68,68,0.95), rgba(249,115,22,0.92));
-  border-color: rgba(255,255,255,0.14);
-}
-
-.game-stats {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-top: 12px;
-}
-
-.game-stats div {
-  padding: 10px 12px;
-  border-radius: 16px;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.06);
-}
-
-.game-stats .muted {
-  display: block;
-  font-size: 0.78rem;
-  color: rgba(255,255,255,0.55);
-}
-
-.game-stats strong {
-  display: block;
-  margin-top: 4px;
-  font-size: 1rem;
-}
-
-.progress-bar {
-  margin-top: 10px;
-  height: 8px;
-  border-radius: 999px;
-  background: rgba(255,255,255,0.08);
-  overflow: hidden;
-}
-
-.progress-fill {
-  height: 100%;
-  width: 0%;
-  background: linear-gradient(90deg, #a855f7, #60a5fa);
-  border-radius: 999px;
-}
-
-.bug-float {
-  position: fixed;
-  z-index: 40;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 44px;
-  padding: 0 16px;
-  border-radius: 999px;
-  border: 1px solid rgba(255,255,255,0.18);
-  background: linear-gradient(90deg, rgba(239,68,68,0.98), rgba(249,115,22,0.96));
-  color: white;
-  box-shadow: 0 18px 50px rgba(239,68,68,0.34);
-  cursor: pointer;
-  font-weight: 800;
-}
-
-.hit-effect {
-  position: fixed;
-  z-index: 50;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-  font-size: 1.2rem;
-  font-weight: 800;
-  color: #86efac;
-  text-shadow: 0 0 20px rgba(134,239,172,0.45);
-}
-
 @media (max-width: 1100px) {
   .hero-section,
   .split-section,
@@ -689,10 +586,6 @@ a {
   .profile-card {
     max-width: 520px;
   }
-
-  .game-toolbar {
-    width: 290px;
-  }
 }
 
 @media (max-width: 720px) {
@@ -702,7 +595,7 @@ a {
 
   .hero-section {
     gap: 28px;
-    padding-top: 92px;
+    padding-top: 22px;
     padding-bottom: 36px;
   }
 
@@ -745,19 +638,5 @@ a {
   .bottom-banner {
     flex-direction: column;
     align-items: flex-start;
-  }
-
-  .game-toolbar {
-    top: 12px;
-    right: 12px;
-    left: 12px;
-    width: auto;
-    border-radius: 20px;
-  }
-
-  .bug-float {
-    min-height: 40px;
-    padding: 0 14px;
-    font-size: 0.9rem;
   }
 }

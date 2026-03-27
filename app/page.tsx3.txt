@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   ArrowRight,
   BadgeCheck,
@@ -17,7 +16,6 @@ import {
   Sparkles,
   TestTubeDiagonal,
   Wallet,
-  X,
 } from "lucide-react";
 
 const stats = [
@@ -97,78 +95,12 @@ const timeline = [
 ];
 
 export default function Home() {
-  const [gameEnabled, setGameEnabled] = useState(false);
-  const [score, setScore] = useState(0);
-  const [difficulty, setDifficulty] = useState(0.55);
-  const [bugVisible, setBugVisible] = useState(false);
-  const [bugPosition, setBugPosition] = useState({ x: 70, y: 62 });
-  const [hitEffect, setHitEffect] = useState({ x: 0, y: 0, show: false });
-
-  const qaRank =
-    score >= 25 ? "QA Ninja" : score >= 15 ? "QA Pro" : score >= 7 ? "QA Middle" : "QA Junior";
-  const qaProgress = Math.min(100, score * 4);
-
-  const spawnBug = () => {
-    setBugPosition({
-      x: 8 + Math.random() * 84,
-      y: 12 + Math.random() * 76,
-    });
-    setBugVisible(true);
-  };
-
-  useEffect(() => {
-    if (!gameEnabled) {
-      setBugVisible(false);
-      return;
-    }
-
-    const timer = setTimeout(() => {
-      spawnBug();
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, [gameEnabled]);
-
   return (
     <main className="page-shell">
       <div className="bg-orb orb-left" />
       <div className="bg-orb orb-right" />
       <div className="bg-grid" />
       <div className="stars-layer" />
-
-      <div className="game-toolbar glass-card">
-        <button
-          onClick={() => {
-            const next = !gameEnabled;
-            setGameEnabled(next);
-            if (!next) setBugVisible(false);
-            if (next && !bugVisible) spawnBug();
-          }}
-          className={`game-toggle ${gameEnabled ? "active" : ""}`}
-        >
-          <Bug size={16} />
-          <span>{gameEnabled ? "Игра включена" : "Включить bug game"}</span>
-        </button>
-
-        <div className="game-stats">
-          <div>
-            <span className="muted">Баги</span>
-            <strong>{score}</strong>
-          </div>
-          <div>
-            <span className="muted">Ранг</span>
-            <strong>{qaRank}</strong>
-          </div>
-        </div>
-
-        <div className="progress-bar">
-          <motion.div
-            className="progress-fill"
-            animate={{ width: `${qaProgress}%` }}
-            transition={{ duration: 0.3 }}
-          />
-        </div>
-      </div>
 
       <section className="container hero-section">
         <motion.div
@@ -400,67 +332,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      <AnimatePresence>
-        {gameEnabled && bugVisible && (
-          <motion.button
-            key="bug"
-            initial={{ scale: 0.7, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.6, opacity: 0 }}
-            onMouseEnter={() => {
-              if (Math.random() < difficulty) {
-                setTimeout(() => {
-                  setBugPosition({
-                    x: 8 + Math.random() * 84,
-                    y: 12 + Math.random() * 76,
-                  });
-                }, 110);
-              }
-            }}
-            onClick={(e) => {
-              setHitEffect({
-                x: e.clientX,
-                y: e.clientY,
-                show: true,
-              });
-              setScore((prev) => prev + 1);
-              setDifficulty((prev) => Math.min(0.92, prev + 0.03));
-              setBugVisible(false);
-
-              setTimeout(() => {
-                setHitEffect((prev) => ({ ...prev, show: false }));
-              }, 650);
-
-              setTimeout(() => {
-                if (gameEnabled) spawnBug();
-              }, 500);
-            }}
-            className="bug-float"
-            style={{
-              left: `${bugPosition.x}%`,
-              top: `${bugPosition.y}%`,
-            }}
-          >
-            <Bug size={16} />
-            <span>BUG</span>
-          </motion.button>
-        )}
-      </AnimatePresence>
-
-      <AnimatePresence>
-        {hitEffect.show && (
-          <motion.div
-            initial={{ opacity: 0, y: 8, scale: 0.8 }}
-            animate={{ opacity: 1, y: -12, scale: 1 }}
-            exit={{ opacity: 0, y: -26, scale: 0.9 }}
-            className="hit-effect"
-            style={{ left: hitEffect.x, top: hitEffect.y }}
-          >
-            +1 🐞
-          </motion.div>
-        )}
-      </AnimatePresence>
     </main>
   );
 }

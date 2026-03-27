@@ -1,0 +1,447 @@
+"use client";
+import Image from "next/image";
+import { motion } from "framer-motion";
+import { useState } from "react";
+
+export default function Home() {
+  const [score, setScore] = useState(0);
+  const [hitEffect, setHitEffect] = useState({ x: 0, y: 0, show: false });
+  const [difficulty, setDifficulty] = useState(0.6);
+  const [isClosing, setIsClosing] = useState(false);
+  const [showContacts, setShowContacts] = useState(false);
+  const [bugPosition, setBugPosition] = useState({ x: 50, y: 50 });
+  const [showBug, setShowBug] = useState(false);
+  const [cursorGlow, setCursorGlow] = useState({ x: 50, y: 50 });
+  const [openSkill, setOpenSkill] = useState<string | null>(null);
+  const buttonClass =
+    "rounded-full border border-white/20 bg-gradient-to-r from-purple-500 to-blue-500 px-8 py-3 font-semibold text-white backdrop-blur-md transition-all duration-300 hover:scale-105 hover:shadow-[0_0_25px_rgba(168,85,247,0.7)] active:scale-95";
+  const buttonSmallClass = `${buttonClass} px-6 py-2 text-sm`;
+  const bugButtonClass =
+    "z-50 rounded-full border border-red-300/40 bg-gradient-to-r from-red-500 via-orange-500 to-amber-400 px-5 py-2 text-sm font-extrabold tracking-wide text-white shadow-[0_0_20px_rgba(239,68,68,0.7)] transition-all duration-200 hover:scale-110 hover:rotate-2 hover:shadow-[0_0_28px_rgba(249,115,22,0.95)] active:scale-90";
+  const qaRank =
+    score >= 25 ? "QA Ninja" : score >= 15 ? "QA Pro" : score >= 7 ? "QA Middle" : "QA Junior";
+  const qaProgress = Math.min(100, score * 4);
+  const hardSkillsData = [
+    {
+      title: "Теория тестирования",
+      details: [
+        "Этапы разработки и тестирования (SDLC/STLC)",
+        "Функциональное, регрессионное, smoke, sanity тестирование",
+        "Уровни тестирования: модульное, интеграционное, системное, приемочное",
+        "Типы дефектов и приоритизация багов",
+      ],
+    },
+    {
+      title: "Тест-дизайн",
+      details: [
+        "Техники: граничные значения, эквивалентные классы",
+        "Подбор позитивных и негативных сценариев",
+        "Снижение рисков за счет покрытия критичных флоу",
+      ],
+    },
+    {
+      title: "Тестовая документация",
+      details: [
+        "Создание тест-планов и чек-листов",
+        "Написание и поддержка тест-кейсов",
+        "Оформление баг-репортов с приоритетом и шагами воспроизведения",
+      ],
+    },
+    {
+      title: "Postman, Swagger",
+      details: [
+        "Проверка методов GET, POST, PUT, DELETE",
+        "Настройка окружений и переменных в Postman",
+        "Валидация структуры JSON, кодов состояния и тела ответа",
+      ],
+    },
+    {
+      title: "DevTools",
+      details: [
+        "Анализ сетевых запросов, заголовков и payload",
+        "Проверка ошибок в консоли и поведения интерфейса",
+        "Работа с хранилищами браузера и cookie",
+      ],
+    },
+    {
+      title: "Мобильное тестирование (Android)",
+      details: [
+        "Установка и проверка мобильных билдов",
+        "Проверка поведения приложения в разных состояниях",
+        "Перехват и анализ HTTP/HTTPS-трафика",
+      ],
+    },
+    {
+      title: "Тестирование Web сайтов",
+      details: [
+        "Ручное тестирование web-приложений и пользовательских сценариев",
+        "Проверка UI/UX, валидаций и интерактивных элементов",
+        "Кроссбраузерная проверка и адаптивность интерфейса",
+      ],
+    },
+    {
+      title: "Анализ клиент-серверного взаимодействия",
+      details: [
+        "Понимание клиент-серверной архитектуры",
+        "Проверка корректности обмена данными между клиентом и сервером",
+        "Оценка влияния дефектов на бизнес-флоу",
+      ],
+    },
+    {
+      title: "Баг-трекинговые системы Jira, ClickUp",
+      details: [
+        "Создание и оформление баг-репортов",
+        "Работа со статусами, приоритетами и досками задач",
+        "Отслеживание прогресса исправлений до релиза",
+      ],
+    },
+  ];
+
+  return (
+    <main
+      className="relative overflow-hidden text-white"
+      onMouseMove={(e) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        setCursorGlow({
+          x: ((e.clientX - rect.left) / rect.width) * 100,
+          y: ((e.clientY - rect.top) / rect.height) * 100,
+        });
+      }}
+    >
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-black to-blue-900 opacity-80" />
+      <motion.div
+        aria-hidden
+        className="pointer-events-none absolute -translate-x-1/2 -translate-y-1/2 rounded-full bg-purple-500/20 blur-3xl"
+        animate={{ left: `${cursorGlow.x}%`, top: `${cursorGlow.y}%` }}
+        transition={{ type: "spring", stiffness: 60, damping: 25 }}
+        style={{ width: 280, height: 280 }}
+      />
+
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="relative z-10 flex h-screen flex-col items-center justify-center space-y-6 px-4 text-center sm:px-6"
+      >
+        <h1 className="text-4xl font-bold md:text-6xl">
+          Привет, я{" "}
+          <span className="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+            Алексей Суворов
+          </span>
+        </h1>
+
+        <div className="group relative mx-auto h-44 w-44 overflow-hidden rounded-full border-4 border-white/40 shadow-[0_0_30px_rgba(79,70,229,0.6)] before:absolute before:inset-0 before:rounded-full before:border before:border-white/10 before:transition before:duration-300 before:opacity-0 before:blur-sm before:shadow-[0_0_30px_rgba(131,81,255,0.4)] after:absolute after:inset-0 after:rounded-full after:bg-gradient-to-br after:from-purple-500/40 after:via-purple-500/20 after:to-blue-500/30 after:opacity-0 after:transition after:duration-500 group-hover:before:opacity-100 group-hover:after:opacity-100 group-hover:after:scale-105">
+          <Image
+            src="https://i.postimg.cc/G3gjRR3p/2026-03-25-23-39-18.jpg"
+            alt="Алексей Суворов"
+            fill
+            sizes="(max-width: 768px) 180px, 220px"
+            className="object-cover"
+            priority
+          />
+        </div>
+
+        <p className="text-lg text-gray-400">
+          Manual QA Engineer | Помогаю выпускать стабильные продукты: проверяю UI, API и
+          пользовательские сценарии до релиза
+        </p>
+
+        <div className="flex justify-center gap-4">
+          <button
+            onClick={() => {
+              setShowBug(true);
+              setBugPosition({
+                x: Math.random() * 80,
+                y: Math.random() * 80,
+              });
+            }}
+            className={buttonClass}
+          >
+            Найти баг
+          </button>
+
+          <button
+            onClick={() => setShowContacts(true)}
+            className={buttonClass}
+          >
+            Связаться со мной
+          </button>
+        </div>
+
+        <div className="w-full max-w-2xl space-y-3 rounded-3xl border border-white/10 bg-white/5 px-8 py-6 text-center text-gray-200 backdrop-blur-md md:px-12 md:py-8">
+          <h3 className="text-2xl font-semibold text-white/90 md:text-3xl">QA Engineer</h3>
+          <p className="text-lg text-gray-300 md:text-xl">Codify | Июнь 2025 — по настоящее время</p>
+        </div>
+      </motion.div>
+
+      {showContacts && (
+        <div
+          onClick={() => setShowContacts(false)}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className={`space-y-4 rounded-2xl border border-white/20 bg-white/10 p-8 text-center ${
+              isClosing ? "animate-scaleOut" : "animate-scaleIn"
+            }`}
+          >
+            <h2 className="text-2xl font-bold">Связаться со мной</h2>
+
+            <p>
+              📧 email:{" "}
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText("alexsei.050598@gmail.com");
+                  alert("Почта скопирована 📋");
+                }}
+                className="font-medium underline underline-offset-4 transition-colors hover:text-purple-400"
+              >
+                alexsei.050598@gmail.com
+              </button>
+            </p>
+
+            <p>
+              💬 telegram:{" "}
+              <a
+                href="https://t.me/Alex203023"
+                target="_blank"
+                rel="noreferrer"
+                className="underline hover:text-purple-400"
+              >
+                @Alex203023
+              </a>
+            </p>
+
+            <p>
+              📱 телефон:{" "}
+              <span className="font-medium">996-555-803-193</span>
+            </p>
+
+            <p>
+              🌇 местоположение:{" "}
+              <span className="font-medium">Бишкек, Кыргызстан</span>
+            </p>
+
+            <p>
+              LinkedIn:{" "}
+              <a
+                href="https://www.linkedin.com/in/aleksey-suvorov-qa/"
+                target="_blank"
+                rel="noreferrer"
+                className="underline hover:text-purple-400"
+              >
+                aleksey-suvorov-qa
+              </a>
+            </p>
+
+            <button
+              onClick={() => {
+                setIsClosing(true);
+                setTimeout(() => {
+                  setShowContacts(false);
+                  setIsClosing(false);
+                }, 300);
+              }}
+              className={`mt-4 ${buttonSmallClass}`}
+            >
+              Закрыть
+            </button>
+          </div>
+        </div>
+      )}
+
+      {showBug && (
+        <button
+          onMouseEnter={() => {
+            if (Math.random() < difficulty) {
+              setTimeout(() => {
+                setBugPosition({
+                  x: Math.random() * 90,
+                  y: Math.random() * 90,
+                });
+              }, 150);
+            }
+          }}
+          onClick={(e) => {
+            setHitEffect({
+              x: e.clientX,
+              y: e.clientY,
+              show: true,
+            });
+            setScore((prev) => prev + 1);
+            setShowBug(false);
+            setDifficulty((prev) => Math.min(0.9, prev + 0.05));
+
+            setTimeout(() => {
+              setHitEffect((prev) => ({ ...prev, show: false }));
+            }, 600);
+          }}
+          style={{
+            position: "fixed",
+            left: `${bugPosition.x}%`,
+            top: `${bugPosition.y}%`,
+          }}
+          className={bugButtonClass}
+        >
+          🐞 BUG
+        </button>
+      )}
+
+      {hitEffect.show && (
+        <div
+          style={{
+            position: "fixed",
+            left: hitEffect.x,
+            top: hitEffect.y,
+            transform: "translate(-50%, -50%)",
+          }}
+          className="pointer-events-none z-50 animate-bounce font-bold text-green-400"
+        >
+          +1 🐞
+        </div>
+      )}
+
+      <div className="fixed right-5 top-5 z-50 w-44 rounded-xl border border-white/10 bg-black/50 px-4 py-3 backdrop-blur-md">
+        <div className="flex items-center justify-between text-sm">
+          <span>🐞 Баги</span>
+          <span className="font-bold text-purple-400">{score}</span>
+        </div>
+        <div className="mt-2 h-2 overflow-hidden rounded-full bg-white/10">
+          <motion.div
+            className="h-full rounded-full bg-gradient-to-r from-purple-400 to-blue-400"
+            animate={{ width: `${qaProgress}%` }}
+            transition={{ duration: 0.35 }}
+          />
+        </div>
+        <p className="mt-2 text-xs text-gray-300">Ранг: {qaRank}</p>
+      </div>
+
+      <section className="relative px-6 py-32">
+        <h2 className="mb-16 text-center text-3xl font-bold md:text-5xl">Мой подход к качеству</h2>
+
+        <div className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-10 md:grid-cols-2 md:gap-12 lg:grid-cols-4">
+          <div className="group relative min-h-[180px] overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-white/5 to-white/0 p-8 backdrop-blur-2xl transition-all duration-500 ease-out hover:scale-[1.12] hover:border-purple-400/60 hover:shadow-[0_0_100px_rgba(168,85,247,0.7)] active:scale-95 md:p-10">
+            <div className="absolute inset-0 z-0 opacity-0 blur-2xl transition duration-500 group-hover:opacity-100 bg-gradient-to-br from-purple-500/20 via-transparent to-blue-500/20" />
+            <h3 className="relative z-10 text-xl font-semibold text-white transition group-hover:text-purple-300">
+              💼 Доменные проекты
+            </h3>
+            <p className="relative z-10 mt-3 text-base text-gray-400/90 transition group-hover:text-gray-300">
+              Тестировал банковские продукты, маркетплейсы и B2B-сервисы на вебе и мобайле
+            </p>
+          </div>
+
+          <div className="group relative min-h-[180px] overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-white/5 to-white/0 p-8 backdrop-blur-2xl transition-all duration-500 ease-out hover:scale-[1.12] hover:border-purple-400/60 hover:shadow-[0_0_100px_rgba(168,85,247,0.7)] active:scale-95 md:p-10">
+            <div className="absolute inset-0 z-0 opacity-0 blur-2xl transition duration-500 group-hover:opacity-100 bg-gradient-to-br from-purple-500/20 via-transparent to-blue-500/20" />
+            <h3 className="relative z-10 text-xl font-semibold text-white transition group-hover:text-purple-300">
+              🛠 Инструменты и практика
+            </h3>
+            <p className="relative z-10 mt-3 text-base text-gray-400/90 transition group-hover:text-gray-300">
+              Postman, Swagger, DevTools, Jira, ClickUp, тест-кейсы, чек-листы и баг-репорты
+            </p>
+          </div>
+
+          <div className="group relative min-h-[180px] overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-white/5 to-white/0 p-8 backdrop-blur-2xl transition-all duration-500 ease-out hover:scale-[1.12] hover:border-purple-400/60 hover:shadow-[0_0_100px_rgba(168,85,247,0.7)] active:scale-95 md:p-10">
+            <div className="absolute inset-0 z-0 opacity-0 blur-2xl transition duration-500 group-hover:opacity-100 bg-gradient-to-br from-purple-500/20 via-transparent to-blue-500/20" />
+            <h3 className="relative z-10 text-xl font-semibold text-white transition group-hover:text-purple-300">
+              🎯 Подход к качеству
+            </h3>
+            <p className="relative z-10 mt-3 text-base text-gray-400/90 transition group-hover:text-gray-300">
+              Работаю от рисков: приоритизирую проверки и нахожу критичные дефекты до продакшена
+            </p>
+          </div>
+
+          <div className="group relative min-h-[180px] overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-white/5 to-white/0 p-8 backdrop-blur-2xl transition-all duration-500 ease-out hover:scale-[1.12] hover:border-purple-400/60 hover:shadow-[0_0_100px_rgba(168,85,247,0.7)] active:scale-95 md:p-10">
+            <div className="absolute inset-0 z-0 opacity-0 blur-2xl transition duration-500 group-hover:opacity-100 bg-gradient-to-br from-purple-500/20 via-transparent to-blue-500/20" />
+            <h3 className="relative z-10 text-xl font-semibold text-white transition group-hover:text-purple-300">
+              ⚡ Что проверяю
+            </h3>
+            <p className="relative z-10 mt-3 text-base text-gray-400/90 transition group-hover:text-gray-300">
+              Функционал, регресс, smoke/sanity, API-контракты, UI/UX, кроссбраузерность
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="relative px-6 pb-12">
+        <div className="mx-auto max-w-6xl rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-2xl transition-all duration-500 ease-out hover:border-purple-400/60 hover:shadow-[0_0_100px_rgba(168,85,247,0.7)] md:p-10">
+          <h2 className="mb-6 text-center text-2xl font-bold tracking-[0.22em] text-white/90 md:text-3xl">
+            SKILLS
+          </h2>
+          <div className="h-px w-full bg-gradient-to-r from-transparent via-white/80 to-transparent" />
+          <p className="mx-auto mt-8 max-w-4xl text-center text-lg leading-relaxed text-gray-300 md:text-xl">
+            Участвовал в тестировании цифровых сервисов в рамках крупных продуктовых экосистем — банковские
+            приложения, маркетплейсы и B2B-сервисы. Практический опыт на проектах масштаба Мой!О + Банк,
+            О!Маркет, О!Бизнес, О!Travel, Globus и Neman.
+          </p>
+        </div>
+      </section>
+
+      <section className="relative px-6 pb-16">
+        <div className="mx-auto max-w-6xl rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-2xl md:p-10">
+          <h2 className="mb-6 text-center text-2xl font-bold tracking-[0.22em] text-white/90 md:text-3xl">
+            HARD SKILLS
+          </h2>
+          <div className="h-px w-full bg-gradient-to-r from-transparent via-white/80 to-transparent" />
+          <div className="mt-8 grid gap-3">
+            {hardSkillsData.map((skill) => {
+              const isOpen = openSkill === skill.title;
+              return (
+                <motion.div
+                  key={skill.title}
+                  whileHover={{ x: 4 }}
+                  className="rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-sm text-gray-200 transition-all duration-500 ease-out hover:border-purple-400/60 hover:shadow-[0_0_60px_rgba(168,85,247,0.55)]"
+                >
+                  <button
+                    onClick={() => setOpenSkill(isOpen ? null : skill.title)}
+                    className="flex w-full items-center justify-between gap-4 text-left"
+                  >
+                    <span>• {skill.title}</span>
+                    <span className="text-purple-300">{isOpen ? "−" : "+"}</span>
+                  </button>
+                  {isOpen && (
+                    <motion.ul
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      transition={{ duration: 0.25 }}
+                      className="mt-3 space-y-1 border-t border-white/10 pt-3 text-gray-300"
+                    >
+                      {skill.details.map((point) => (
+                        <li key={point}>• {point}</li>
+                      ))}
+                    </motion.ul>
+                  )}
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      <section className="relative px-6 py-32">
+        <h2 className="mb-16 text-center text-3xl font-bold md:text-5xl">Ключевые проекты</h2>
+
+        <div className="mx-auto grid max-w-6xl gap-10 md:grid-cols-2">
+          <div className="group relative min-h-[180px] overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-white/5 to-white/0 p-8 backdrop-blur-2xl transition-all duration-500 ease-out hover:scale-[1.12] hover:border-purple-400/60 hover:shadow-[0_0_100px_rgba(168,85,247,0.7)] active:scale-95 md:p-10">
+            <h3 className="relative z-10 text-xl font-semibold text-white transition group-hover:text-purple-300">
+              💳 Banking App (Web + API)
+            </h3>
+            <p className="text-gray-400 transition group-hover:text-gray-300">
+              Проверка платежных и клиентских сценариев, API-эндпоинтов и UI-форм. Заводил
+              дефекты в Jira и сопровождал до фикса
+            </p>
+          </div>
+
+          <div className="group relative min-h-[180px] overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-white/5 to-white/0 p-8 backdrop-blur-2xl transition-all duration-500 ease-out hover:scale-[1.12] hover:border-purple-400/60 hover:shadow-[0_0_100px_rgba(168,85,247,0.7)] active:scale-95 md:p-10">
+            <h3 className="relative z-10 text-xl font-semibold text-white transition group-hover:text-purple-300">
+              🛒 Marketplace (E-commerce)
+            </h3>
+            <p className="text-gray-400 transition group-hover:text-gray-300">
+              Тестировал корзину, оформление заказа, оплату и личный кабинет. Проверял UX-флоу,
+              валидации и граничные кейсы
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+  );
+}
