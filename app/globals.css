@@ -128,7 +128,11 @@ a {
   max-width: 780px;
 }
 
-.hero-title span {
+.hero-title-prefix {
+  white-space: nowrap;
+}
+
+.hero-title-accent {
   background: linear-gradient(90deg, #d8b4fe 0%, #a855f7 35%, #60a5fa 100%);
   -webkit-background-clip: text;
   background-clip: text;
