@@ -128,8 +128,9 @@ a {
   max-width: 780px;
 }
 
-.hero-title-prefix {
-  white-space: nowrap;
+.hero-title-gap {
+  display: inline-block;
+  margin-left: 0.18em;
 }
 
 .hero-title-accent {

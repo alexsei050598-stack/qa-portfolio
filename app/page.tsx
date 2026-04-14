@@ -183,7 +183,8 @@ export default function Home() {
           </div>
 
           <h1 className="hero-title">
-            <span className="hero-title-prefix">Привет,&nbsp;я</span>{" "}
+            <span>Привет,</span>
+            <span className="hero-title-gap">я</span>{" "}
             <span className="hero-title-accent">Алексей Суворов</span>
           </h1>
 
